@@ -1,8 +1,8 @@
 import { LayoutProps, WrapperProps } from "@/types";
+import { useState } from "react";
+import styled from "styled-components";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import styled from "styled-components";
-import { useState } from "react";
 
 const Layout = ({ children }: LayoutProps) => {
   const [toggleButton, setToggleButton] = useState(true);

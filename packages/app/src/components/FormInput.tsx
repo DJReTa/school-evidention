@@ -1,5 +1,5 @@
-import { Controller } from "react-hook-form";
 import type FormInput from "@/types/FormInput";
+import { Controller } from "react-hook-form";
 import { Input } from "semantic-ui-react";
 
 const FormInput = ({
