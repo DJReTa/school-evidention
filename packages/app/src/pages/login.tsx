@@ -1,12 +1,22 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Card, Form, Grid } from "semantic-ui-react";
-import SendButton from "../components/SendButton";
-import FormInput from "../components/FormInput";
-import { useForm } from "react-hook-form";
-import { loginSchema } from "@/validations";
+import { loginUser } from "@/api";
+import FormInput from "@/components/FormInput";
+import SendButton from "@/components/SendButton";
+import { useMessageContext } from "@/context/MessageContext";
 import type { LoginFormData } from "@/types";
+import MessageContextData from "@/types/MessageContextData";
+import { loginSchema } from "@/validations";
+import { yupResolver } from "@hookform/resolvers/yup";
+import type { AxiosError } from "axios";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { Card, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Login() {
+  const router = useRouter();
+  const { successMessage, setSuccessMessage } =
+    useMessageContext() as MessageContextData;
+  const { mutateAsync: login, isLoading, error } = useMutation(loginUser);
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: {
@@ -15,8 +25,12 @@ export default function Login() {
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await login(data);
+      setSuccessMessage(null);
+      router.push("/");
+    } catch (error) {}
   };
 
   return (
@@ -28,6 +42,15 @@ export default function Login() {
             style={{ textAlign: "center", fontSize: "25px" }}
           />
           <Card.Content>
+            <Message
+              error
+              header={
+                (error as AxiosError)?.response?.data ||
+                (error as AxiosError)?.message
+              }
+              hidden={!error}
+            />
+            <Message success header={successMessage} hidden={!successMessage} />
             <Form
               noValidate
               onSubmit={handleSubmit(onSubmit)}
@@ -50,7 +73,7 @@ export default function Login() {
               </Form.Field>
               <Form.Group style={{ textAlign: "center" }}></Form.Group>
               <Form.Field>
-                <SendButton>Send</SendButton>
+                <SendButton disabled={isLoading}>Send</SendButton>
               </Form.Field>
             </Form>
           </Card.Content>

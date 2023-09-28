@@ -1,6 +1,6 @@
 import { SidebarProps, WrapperProps } from "@/types";
-import { Icon } from "semantic-ui-react";
 import type { SemanticICONS } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 import styled from "styled-components";
 
 const navigation = [{ text: "Home", link: "/", icon: "home" }];

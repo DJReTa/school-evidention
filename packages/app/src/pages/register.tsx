@@ -1,12 +1,21 @@
-import { Card, Form, Grid } from "semantic-ui-react";
-import SendButton from "@/components/SendButton";
+import { registerUser } from "@/api";
 import FormInput from "@/components/FormInput";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { registerSchema } from "@/validations";
+import SendButton from "@/components/SendButton";
+import { useMessageContext } from "@/context/MessageContext";
 import type { RegisterFormData } from "@/types";
+import MessageContextData from "@/types/MessageContextData";
+import { registerSchema } from "@/validations";
+import { yupResolver } from "@hookform/resolvers/yup";
+import type { AxiosError } from "axios";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { Card, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Register() {
+  const router = useRouter();
+  const { setSuccessMessage } = useMessageContext() as MessageContextData;
+  const { mutateAsync: register, isLoading, error } = useMutation(registerUser);
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(registerSchema),
     defaultValues: {
@@ -19,8 +28,15 @@ export default function Register() {
     },
   });
 
-  const onSubmit = (data: RegisterFormData) => {
-    console.log(data);
+  const onSubmit = async ({
+    confirmationPassword,
+    ...data
+  }: RegisterFormData) => {
+    try {
+      await register(data);
+      setSuccessMessage("You have successfully registered. Please login!");
+      router.push("/login");
+    } catch (error) {}
   };
 
   return (
@@ -32,6 +48,14 @@ export default function Register() {
             style={{ textAlign: "center", fontSize: "25px" }}
           />
           <Card.Content>
+            <Message
+              error
+              header={
+                (error as AxiosError)?.response?.data ||
+                (error as AxiosError)?.message
+              }
+              hidden={!error}
+            />
             <Form
               noValidate
               onSubmit={handleSubmit(onSubmit)}
@@ -74,7 +98,7 @@ export default function Register() {
                 />
               </Form.Field>
               <Form.Field>
-                <SendButton>Send</SendButton>
+                <SendButton disabled={isLoading}>Send</SendButton>
               </Form.Field>
             </Form>
           </Card.Content>

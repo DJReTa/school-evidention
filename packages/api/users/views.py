@@ -37,8 +37,6 @@ def login(request):
     except ValidationError as e:
         return HttpResponse('Credentials are incorrect, please check if you entered the correct username or password!', status=401)
     except ObjectDoesNotExist as e:
-        return HttpResponse('User with the given username does not exist', status=404)
+        return HttpResponse('User with the given username does not exist!', status=404)
     except Exception as e:
          return HttpResponse(f'An error occured: {str(e)}', status=500)
-
-

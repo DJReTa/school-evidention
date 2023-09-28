@@ -4,7 +4,7 @@ type RegisterFormData = {
   username: string;
   email: string;
   password: string;
-  confirmationPassword: string;
+  confirmationPassword?: string;
 };
 
 export default RegisterFormData;
