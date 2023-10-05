@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
-interface ContextProps {
+interface ChildrenProps {
   children: ReactNode;
 }
 
-export default ContextProps;
+export default ChildrenProps;

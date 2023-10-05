@@ -1,5 +1,5 @@
 interface WrapperProps {
-  toggleButton: boolean;
+  expanded: boolean;
 }
 
 export default WrapperProps;

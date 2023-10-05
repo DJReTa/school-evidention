@@ -1,17 +1,17 @@
-import { LayoutProps, WrapperProps } from "@/types";
+import type { ChildrenProps, WrapperProps } from "@/types";
 import { useState } from "react";
 import styled from "styled-components";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: ChildrenProps) => {
   const [toggleButton, setToggleButton] = useState(true);
 
   return (
     <>
       <Sidebar toggleButton={toggleButton} />
       <Navbar toggleButton={toggleButton} setToggleButton={setToggleButton} />
-      <Wrapper toggleButton={toggleButton}>{children}</Wrapper>
+      <Wrapper expanded={toggleButton}>{children}</Wrapper>
     </>
   );
 };
@@ -19,7 +19,7 @@ const Layout = ({ children }: LayoutProps) => {
 const Wrapper = styled.div<WrapperProps>`
   position: fixed;
   top: 90px;
-  left: ${({ toggleButton }) => (toggleButton ? "110px" : "240px")};
+  left: ${({ expanded }) => (expanded ? "110px" : "240px")};
   bottom: var(--margin);
   right: var(--margin);
   padding: 2rem 1rem;

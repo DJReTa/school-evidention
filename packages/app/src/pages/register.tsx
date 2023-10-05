@@ -3,7 +3,6 @@ import FormInput from "@/components/FormInput";
 import SendButton from "@/components/SendButton";
 import { useMessageContext } from "@/context/MessageContext";
 import type { RegisterFormData } from "@/types";
-import MessageContextData from "@/types/MessageContextData";
 import { registerSchema } from "@/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { AxiosError } from "axios";
@@ -14,7 +13,7 @@ import { Card, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Register() {
   const router = useRouter();
-  const { setSuccessMessage } = useMessageContext() as MessageContextData;
+  const { setSuccessMessage } = useMessageContext();
   const { mutateAsync: register, isLoading, error } = useMutation(registerUser);
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(registerSchema),

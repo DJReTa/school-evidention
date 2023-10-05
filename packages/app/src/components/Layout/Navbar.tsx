@@ -1,8 +1,15 @@
-import { NavbarProps } from "@/types";
+import { useMessageContext } from "@/context/MessageContext";
+import { useUserProfileContext } from "@/context/UserProfileContext";
+import type { NavbarProps } from "@/types";
+import cookies from "@/utils/cookieUtils";
+import { useRouter } from "next/router";
 import { Icon, Image } from "semantic-ui-react";
 import styled from "styled-components";
 
 const Navbar = ({ toggleButton, setToggleButton }: NavbarProps) => {
+  const { userProfile } = useUserProfileContext();
+  const { setSuccessMessage } = useMessageContext();
+  const router = useRouter();
   return (
     <Wrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -24,14 +31,20 @@ const Navbar = ({ toggleButton, setToggleButton }: NavbarProps) => {
           />
           <div style={{ display: "flex", flexFlow: "column" }}>
             <span style={{ color: "#fff" }}>
-              <h3>John Doe</h3>
+              <h3>{userProfile?.fullName}</h3>
             </span>
             <span style={{ color: "#fff" }}>
-              <Icon name="circle" /> Active
+              <Icon name="circle" /> {userProfile?.status}
             </span>
           </div>
         </div>
-        <LogoutWrapper>
+        <LogoutWrapper
+          onClick={() => {
+            cookies.remove("token");
+            router.push("/login");
+            setSuccessMessage("You have successfully logged out!");
+          }}
+        >
           <Icon name="log out" />
         </LogoutWrapper>
       </div>

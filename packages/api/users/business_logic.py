@@ -1,5 +1,9 @@
-from .models import User
 import json
+
+from rest_framework_simplejwt.tokens import AccessToken
+
+from .models import User
+
 
 def getUsers():
     users = User.objects.getUsers()
@@ -18,7 +22,14 @@ def registerUser(data):
     user.saveWithHashedPassword()
 
 def loginUser(data):   
-    User.objects.fetchUserWithPassword(data.get("username"), data.get("password"))
+    user = User.objects.fetchUserWithPassword(data.get("username"), data.get("password"))
+    access_token = AccessToken.for_user(user)
+    access_token['status'] = user.status_display
+    access_token['fullName'] = f'{user.name} {user.surname}'
+    return access_token    
+
+def authorizeUser(token):
+    return {'fullName': token['fullName'], 'status': token['status'], 'username': token['username']}
     
 
     
