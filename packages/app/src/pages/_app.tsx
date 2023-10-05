@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Provider from "@/context/Provider";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -11,7 +12,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <Provider>
-          <Component {...pageProps} />
+          <ProtectedRoute>
+            <Component {...pageProps} />
+          </ProtectedRoute>
         </Provider>
       </Hydrate>
     </QueryClientProvider>

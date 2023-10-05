@@ -1,5 +1,5 @@
-import ContextProps from "@/types/ContextProps";
-import MessageContextData from "@/types/MessageContextData";
+import { MessageContextData } from "@/types";
+import ContextProps from "@/types/ChildrenProps";
 import { createContext, useContext, useState } from "react";
 
 export const Context = createContext<MessageContextData | null>(null);
@@ -17,4 +17,4 @@ export const Provider = ({ children }: ContextProps) => {
 
 export const { Consumer } = Context;
 
-export const useMessageContext = () => useContext(Context);
+export const useMessageContext = () => useContext(Context) as MessageContextData;

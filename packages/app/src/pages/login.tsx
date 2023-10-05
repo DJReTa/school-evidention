@@ -3,7 +3,6 @@ import FormInput from "@/components/FormInput";
 import SendButton from "@/components/SendButton";
 import { useMessageContext } from "@/context/MessageContext";
 import type { LoginFormData } from "@/types";
-import MessageContextData from "@/types/MessageContextData";
 import { loginSchema } from "@/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { AxiosError } from "axios";
@@ -14,8 +13,7 @@ import { Card, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Login() {
   const router = useRouter();
-  const { successMessage, setSuccessMessage } =
-    useMessageContext() as MessageContextData;
+  const { successMessage, setSuccessMessage } = useMessageContext();
   const { mutateAsync: login, isLoading, error } = useMutation(loginUser);
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(loginSchema),

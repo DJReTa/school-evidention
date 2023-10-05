@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -131,3 +132,28 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.User"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ]
+}
+
+SIMPLE_JWT = {
+     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+     'ROTATE_REFRESH_TOKENS': True,
+     'BLACKLIST_AFTER_ROTATION': True,
+     'ALGORITHM': 'HS256',
+     'SIGNING_KEY': SECRET_KEY,
+     'VERIFYING_KEY': None,
+     'AUTH_HEADER_TYPES': ('JWT',),
+     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+     'USER_ID_FIELD': 'username',
+     'USER_ID_CLAIM': 'username',
+     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+     'TOKEN_TYPE_CLAIM': 'token_type',
+}

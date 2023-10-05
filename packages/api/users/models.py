@@ -1,8 +1,7 @@
-from django.db import models
-from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.hashers import make_password, check_password
-
+from django.core.exceptions import ValidationError
+from django.db import models
 
 # Create your models here.
 
@@ -17,19 +16,20 @@ class UserManager(models.Manager):
         return self.values("name", "surname", "username", "email", "image", "status", "password")
     
     def fetchUserWithPassword(self, username, password):
-        user = self.values("username", "password").get(username=username)
-        if not check_password(password, user.get('password')):
+        user = self.get(username=username)
+        if not check_password(password, user.password):
             raise ValidationError("Incorrect credentials!")
-        
+        return user
 
-class User(AbstractUser):
-    USER_STATUS_CHOICES = [
+USER_STATUS_CHOICES = [
         ("active", "Active"),
         ("sick", "Sick"),
         ("on_vacation", "On Vacation"),
         ("away", "Away"),
         ("offline", "Offline")
-    ]
+    ]   
+
+class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
@@ -41,7 +41,16 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    USERNAME_FIELD = "username"
+
     def saveWithHashedPassword(self):
         password = self.password
         self.password = make_password(password)
         self.save()
+
+    @property
+    def status_display(self):
+        for value, display_text in USER_STATUS_CHOICES:
+            if value == self.status:
+                return display_text
+        return "Unknown"

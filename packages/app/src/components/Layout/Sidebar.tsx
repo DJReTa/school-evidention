@@ -1,4 +1,4 @@
-import { SidebarProps, WrapperProps } from "@/types";
+import type { SidebarProps, WrapperProps } from "@/types";
 import type { SemanticICONS } from "semantic-ui-react";
 import { Icon } from "semantic-ui-react";
 import styled from "styled-components";
@@ -7,7 +7,7 @@ const navigation = [{ text: "Home", link: "/", icon: "home" }];
 
 const Sidebar = ({ toggleButton }: SidebarProps) => {
   return (
-    <Wrapper toggleButton={toggleButton}>
+    <Wrapper expanded={toggleButton}>
       <ul>
         {navigation.map((item) => (
           <li key={item.text}>
@@ -33,8 +33,8 @@ const Wrapper = styled.div<WrapperProps>`
   border-bottom-left-radius: 20px;
   transition: 0.4s;
   overflow: auto;
-  width: ${({ toggleButton }) =>
-    toggleButton ? "90px !important" : "220px !important"};
+  width: ${({ expanded }) =>
+    expanded ? "90px !important" : "220px !important"};
 
   & ul {
     list-style: none;
@@ -48,8 +48,8 @@ const Wrapper = styled.div<WrapperProps>`
   }
 
   & ul li a span.icon {
-    ${({ toggleButton }) =>
-      toggleButton
+    ${({ expanded }) =>
+      expanded
         ? `
         margin: 0;
         text-align: center;
@@ -62,8 +62,8 @@ const Wrapper = styled.div<WrapperProps>`
   }
 
   & ul li a span.title {
-    ${({ toggleButton }) =>
-      toggleButton
+    ${({ expanded }) =>
+      expanded
         ? `
         font-size: 0.8rem;
         text-align: center;
@@ -75,15 +75,15 @@ const Wrapper = styled.div<WrapperProps>`
 
   & ul li a {
     display: flex;
-    flex-direction: ${({ toggleButton }) => (toggleButton ? "column" : "row")};
+    flex-direction: ${({ expanded }) => (expanded ? "column" : "row")};
     color: var(--primary-text-color);
     font-size: 1.2rem;
     padding: 1rem;
     font-weight: 600;
     margin-bottom: 1px;
     text-align: left;
-    ${({ toggleButton }) =>
-      toggleButton &&
+    ${({ expanded }) =>
+      expanded &&
       `
         align-content: center;
         justify-content: center;

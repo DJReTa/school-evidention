@@ -1,7 +1,9 @@
-from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from rest_framework.decorators import api_view
 import json
+
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.http import HttpResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 from .business_logic import *
 
@@ -16,6 +18,7 @@ def index(request):
         return HttpResponse(f'Ann error occured: {str(e)}', status=500)
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def register(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
@@ -27,11 +30,20 @@ def register(request):
         return HttpResponse(f'An error occured: {str(e)}', status=500)
     
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
-        loginUser(data)
-        return HttpResponse(status=204)
+        access_token = loginUser(data)
+        return HttpResponse(
+            json.dumps(
+                {
+                    "token": str(access_token),
+                }
+            ),
+            status=200,
+            content_type="application/json"
+        )
     except ValueError as e:
         return HttpResponse(f'These fields are empty: {str(e)} ', status=400)
     except ValidationError as e:
@@ -40,3 +52,8 @@ def login(request):
         return HttpResponse('User with the given username does not exist!', status=404)
     except Exception as e:
          return HttpResponse(f'An error occured: {str(e)}', status=500)
+    
+@api_view(['GET'])
+def authorize(request):
+    user = authorizeUser(request.auth)
+    return HttpResponse(json.dumps(user), status=200,content_type="application/json")
