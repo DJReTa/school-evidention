@@ -22,3 +22,8 @@ body {
   box-sizing: border-box;
   font-family: "Montserrat", sans-serif;
 }
+
+.container {
+  display: inline !important;
+  width: 50% !important;
+}

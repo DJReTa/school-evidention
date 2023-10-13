@@ -11,7 +11,7 @@ const Layout = ({ children }: ChildrenProps) => {
     <>
       <Sidebar toggleButton={toggleButton} />
       <Navbar toggleButton={toggleButton} setToggleButton={setToggleButton} />
-      <Wrapper expanded={toggleButton}>{children}</Wrapper>
+      <Wrapper $expanded={toggleButton}>{children}</Wrapper>
     </>
   );
 };
@@ -19,7 +19,7 @@ const Layout = ({ children }: ChildrenProps) => {
 const Wrapper = styled.div<WrapperProps>`
   position: fixed;
   top: 90px;
-  left: ${({ expanded }) => (expanded ? "110px" : "240px")};
+  left: ${({ $expanded }) => ($expanded ? "110px" : "240px")};
   bottom: var(--margin);
   right: var(--margin);
   padding: 2rem 1rem;

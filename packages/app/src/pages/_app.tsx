@@ -4,6 +4,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useState } from "react";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -14,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Provider>
           <ProtectedRoute>
             <Component {...pageProps} />
+            <ToastContainer />
           </ProtectedRoute>
         </Provider>
       </Hydrate>

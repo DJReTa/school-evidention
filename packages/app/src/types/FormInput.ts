@@ -1,10 +1,8 @@
-import type { Control } from "react-hook-form";
-
 type FormInput = {
   name: string;
   labelName: string;
-  control: Control<any, any>;
   type?: string;
+  disabled?: boolean;
 };
 
 export default FormInput;

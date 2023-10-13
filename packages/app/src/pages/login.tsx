@@ -7,15 +7,15 @@ import { loginSchema } from "@/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { Card, Form, Grid, Message } from "semantic-ui-react";
+import { Card, Divider, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Login() {
   const router = useRouter();
   const { successMessage, setSuccessMessage } = useMessageContext();
   const { mutateAsync: login, isLoading, error } = useMutation(loginUser);
-  const { control, handleSubmit } = useForm({
+  const methods = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: {
       username: "",
@@ -49,31 +49,37 @@ export default function Login() {
               hidden={!error}
             />
             <Message success header={successMessage} hidden={!successMessage} />
-            <Form
-              noValidate
-              onSubmit={handleSubmit(onSubmit)}
-              autoComplete="off"
-            >
-              <Form.Field>
-                <FormInput
-                  name="username"
-                  labelName="Username"
-                  control={control}
-                />
-              </Form.Field>
-              <Form.Field>
-                <FormInput
-                  name="password"
-                  labelName="Password"
-                  control={control}
-                  type="password"
-                />
-              </Form.Field>
-              <Form.Group style={{ textAlign: "center" }}></Form.Group>
-              <Form.Field>
-                <SendButton disabled={isLoading}>Send</SendButton>
-              </Form.Field>
-            </Form>
+            <FormProvider {...methods}>
+              <Form
+                noValidate
+                autoComplete="off"
+                onSubmit={methods.handleSubmit(onSubmit)}
+              >
+                <Form.Field>
+                  <FormInput name="username" labelName="Username" />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput
+                    name="password"
+                    labelName="Password"
+                    type="password"
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <SendButton disabled={isLoading}>Send</SendButton>
+                </Form.Field>
+              </Form>
+            </FormProvider>
+            <Divider />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              Don't have a account?{" "}
+              <a
+                style={{ marginLeft: "0.2em", textDecoration: "underline" }}
+                onClick={() => router.push("/register")}
+              >
+                Register
+              </a>
+            </div>
           </Card.Content>
         </Card>
       </Grid.Column>

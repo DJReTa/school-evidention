@@ -7,15 +7,15 @@ import { registerSchema } from "@/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { Card, Form, Grid, Message } from "semantic-ui-react";
+import { Card, Divider, Form, Grid, Message } from "semantic-ui-react";
 
 export default function Register() {
   const router = useRouter();
   const { setSuccessMessage } = useMessageContext();
   const { mutateAsync: register, isLoading, error } = useMutation(registerUser);
-  const { control, handleSubmit } = useForm({
+  const methods = useForm({
     resolver: yupResolver(registerSchema),
     defaultValues: {
       name: "",
@@ -55,51 +55,53 @@ export default function Register() {
               }
               hidden={!error}
             />
-            <Form
-              noValidate
-              onSubmit={handleSubmit(onSubmit)}
-              autoComplete="off"
-            >
-              <Form.Field>
-                <FormInput name="name" labelName="Name" control={control} />
-              </Form.Field>
-              <Form.Field>
-                <FormInput
-                  name="surname"
-                  labelName="Surname"
-                  control={control}
-                />
-              </Form.Field>
-              <Form.Field>
-                <FormInput
-                  name="username"
-                  labelName="Username"
-                  control={control}
-                />
-              </Form.Field>
-              <Form.Field>
-                <FormInput name="email" labelName="E-mail" control={control} />
-              </Form.Field>
-              <Form.Field>
-                <FormInput
-                  name="password"
-                  labelName="Password"
-                  type="password"
-                  control={control}
-                />
-              </Form.Field>
-              <Form.Field>
-                <FormInput
-                  name="confirmationPassword"
-                  labelName="Confirmation password"
-                  type="password"
-                  control={control}
-                />
-              </Form.Field>
-              <Form.Field>
-                <SendButton disabled={isLoading}>Send</SendButton>
-              </Form.Field>
-            </Form>
+            <FormProvider {...methods}>
+              <Form
+                noValidate
+                onSubmit={methods.handleSubmit(onSubmit)}
+                autoComplete="off"
+              >
+                <Form.Field>
+                  <FormInput name="name" labelName="Name" />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput name="surname" labelName="Surname" />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput name="username" labelName="Username" />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput name="email" labelName="E-mail" />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput
+                    name="password"
+                    labelName="Password"
+                    type="password"
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <FormInput
+                    name="confirmationPassword"
+                    labelName="Confirmation password"
+                    type="password"
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <SendButton disabled={isLoading}>Send</SendButton>
+                </Form.Field>
+              </Form>
+            </FormProvider>
+            <Divider />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              Already have an account?{" "}
+              <a
+                style={{ marginLeft: "0.2em", textDecoration: "underline" }}
+                onClick={() => router.push("/login")}
+              >
+                Log in
+              </a>
+            </div>
           </Card.Content>
         </Card>
       </Grid.Column>

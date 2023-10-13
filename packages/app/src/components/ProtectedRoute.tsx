@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }: ChildrenProps) => {
             Authorization: `JWT ${cookies.get("token")}`,
           },
         });
-        setAuthorizedUser(data);
+        if (!userProfile?.username) setAuthorizedUser(data);
       } catch (error) {
         emptyUserProfile();
         cookies.remove("token");

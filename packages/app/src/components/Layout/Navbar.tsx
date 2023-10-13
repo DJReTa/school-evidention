@@ -1,15 +1,17 @@
 import { useMessageContext } from "@/context/MessageContext";
 import { useUserProfileContext } from "@/context/UserProfileContext";
+import { useProfileImageGetter } from "@/hooks";
 import type { NavbarProps } from "@/types";
 import cookies from "@/utils/cookieUtils";
 import { useRouter } from "next/router";
-import { Icon, Image } from "semantic-ui-react";
+import { Icon, Image, Loader } from "semantic-ui-react";
 import styled from "styled-components";
 
 const Navbar = ({ toggleButton, setToggleButton }: NavbarProps) => {
   const { userProfile } = useUserProfileContext();
   const { setSuccessMessage } = useMessageContext();
   const router = useRouter();
+  const { image, loading } = useProfileImageGetter(userProfile?.username);
   return (
     <Wrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -24,11 +26,15 @@ const Navbar = ({ toggleButton, setToggleButton }: NavbarProps) => {
       </div>
       <div style={{ display: "flex", flexFlow: "row" }}>
         <div style={{ display: "flex", flexFlow: "row" }}>
-          <Image
-            src="https://img.freepik.com/premium-vector/young-smiling-man-avatar-man-with-brown-beard-mustache-hair-wearing-yellow-sweater-sweatshirt-3d-vector-people-character-illustration-cartoon-minimal-style_365941-860.jpg?w=2000"
-            style={{ width: "3em", height: "3em" }}
-            className="ui avatar  image"
-          />
+          {loading ? (
+            <Loader inline active />
+          ) : (
+            <Image
+              src={image}
+              style={{ width: "3em", height: "3em", objectFit: "cover" }}
+              avatar
+            />
+          )}
           <div style={{ display: "flex", flexFlow: "column" }}>
             <span style={{ color: "#fff" }}>
               <h3>{userProfile?.fullName}</h3>
