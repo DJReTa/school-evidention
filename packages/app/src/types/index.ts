@@ -1,11 +1,14 @@
 export type { default as ChildrenProps } from "./ChildrenProps";
 export type { default as FormInput } from "./FormInput";
+export type { default as ImageFormInput } from "./ImageFormInput";
 export type { default as LayoutProps } from "./LayoutProps";
 export type { default as LoginFormData } from "./LoginFormData";
 export type { default as MessageContextData } from "./MessageContextData";
 export type { default as NavbarProps } from "./NavbarProps";
 export type { default as RegisterFormData } from "./RegisterFormData";
 export type { default as SidebarProps } from "./SidebarProps";
+export type { default as UpdateProfileModalProps } from "./UpdateProfileModalProps";
+export type { default as UpdateUserFormData } from "./UpdateUserFormData";
 export type { default as UserProfileContextData } from "./UserProfileContextData";
 export type { default as UserProfileData } from "./UserProfileData";
 export type { default as WrapperProps } from "./WrapperProps";

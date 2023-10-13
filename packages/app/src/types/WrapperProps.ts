@@ -1,5 +1,5 @@
 interface WrapperProps {
-  expanded: boolean;
+  $expanded: boolean;
 }
 
 export default WrapperProps;

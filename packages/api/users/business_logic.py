@@ -1,5 +1,6 @@
 import json
 
+from django.core.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import User
@@ -8,6 +9,7 @@ from .models import User
 def getUsers():
     users = User.objects.getUsers()
     return json.dumps(list(users))
+
 
 def registerUser(data):
     username = data.get("username")
@@ -21,15 +23,40 @@ def registerUser(data):
     user = User(**data)
     user.saveWithHashedPassword()
 
-def loginUser(data):   
-    user = User.objects.fetchUserWithPassword(data.get("username"), data.get("password"))
+
+def loginUser(data):
+    user = User.objects.fetchUserWithPassword(
+        data.get("username"), data.get("password"))
     access_token = AccessToken.for_user(user)
-    access_token['status'] = user.status_display
-    access_token['fullName'] = f'{user.name} {user.surname}'
-    return access_token    
+    return access_token
+
 
 def authorizeUser(token):
-    return {'fullName': token['fullName'], 'status': token['status'], 'username': token['username']}
-    
+    user = User.objects.get(username=token['username'])
+    return {'fullName': f'{user.name} {user.surname}', 'status': user.status_display, 'username': token['username'], 'type': user.type_display}
 
-    
+
+def updateUser(data, image, username):
+    user = None
+    user = User.objects.get(username=username)
+
+    user.updateNameAndSurname(data.get("name"), data.get("surname"))
+
+    if data.get("oldPassword"):
+        if not user.doesPasswordMatch(data.get("oldPassword")):
+            raise ValidationError("Old password does not match!")
+        if user.doesPasswordMatch(data.get("password")):
+            raise ValidationError(
+                "New password can not be same as the old one!")
+        user.updatePassword(data.get("password"))
+
+    if image:
+        user.updateProfilePicture(image)
+
+    user.save()
+
+
+def getUserProfileImage(token):
+    username = token['username']
+    user = User.objects.get(username=username)
+    return user.image

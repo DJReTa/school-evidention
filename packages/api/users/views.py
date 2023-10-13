@@ -1,13 +1,15 @@
 import json
+import mimetypes
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.http import HttpResponse
+from django.http import FileResponse, HttpRequest, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from .business_logic import *
 
 # Create your views here.
+
 
 @api_view(["GET"])
 def index(request):
@@ -16,6 +18,7 @@ def index(request):
         return HttpResponse(data, content_type='application/json')
     except Exception as e:
         return HttpResponse(f'Ann error occured: {str(e)}', status=500)
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -28,7 +31,8 @@ def register(request):
         return HttpResponse(str(e), status=409)
     except Exception as e:
         return HttpResponse(f'An error occured: {str(e)}', status=500)
-    
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -51,9 +55,38 @@ def login(request):
     except ObjectDoesNotExist as e:
         return HttpResponse('User with the given username does not exist!', status=404)
     except Exception as e:
-         return HttpResponse(f'An error occured: {str(e)}', status=500)
-    
+        return HttpResponse(f'An error occured: {str(e)}', status=500)
+
+
 @api_view(['GET'])
 def authorize(request):
     user = authorizeUser(request.auth)
-    return HttpResponse(json.dumps(user), status=200,content_type="application/json")
+    return HttpResponse(json.dumps(user), status=200, content_type="application/json")
+
+
+@api_view(['PATCH'])
+def update(request: HttpRequest, username):
+    try:
+        dataDict = request.POST.dict()
+        image = request.FILES.get('image')
+
+        updateUser(dataDict, image, username)
+
+        return HttpResponse(status=204)
+    except ValidationError as e:
+        return HttpResponse(f'{"".join(e)}', status=400)
+    except ObjectDoesNotExist as e:
+        return HttpResponse('User with the given username does not exist!', status=404)
+    except Exception as e:
+        return HttpResponse(f'An error occured: {str(e)}', status=500)
+
+
+@api_view(['GET'])
+def profilePicture(request: HttpRequest):
+    try:
+        image = getUserProfileImage(request.auth)
+        return FileResponse(image)
+    except ObjectDoesNotExist as e:
+        return HttpResponse('User with the given username does not exist!', status=404)
+    except Exception as e:
+        return HttpResponse(f'An error occured: {str(e)}', status=500)

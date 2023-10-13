@@ -28,4 +28,6 @@ export const fetcherWithoutAuthToken = axios.create({
 
 export default fetcher;
 export { default as loginUser } from "./users/loginUser";
+export { default as profilePicture } from "./users/profilePicture";
 export { default as registerUser } from "./users/registerUser";
+export { default as updateUser } from "./users/updateUser";
